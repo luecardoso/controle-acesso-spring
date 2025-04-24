@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -20,7 +21,8 @@ public class SecurityConfig {
 
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            SenhaMasterAuthenticationProvider senhaMasterAuthenticationProvider) throws Exception {
+            SenhaMasterAuthenticationProvider senhaMasterAuthenticationProvider,
+            CustomFilter customFilter) throws Exception {
         return http
                 .authorizeHttpRequests(requests -> {
                     requests
@@ -29,7 +31,9 @@ public class SecurityConfig {
                 })
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
-                .authenticationProvider(senhaMasterAuthenticationProvider)//pode adicionar mais de um provider
+                .authenticationProvider(senhaMasterAuthenticationProvider)
+
+                .addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
