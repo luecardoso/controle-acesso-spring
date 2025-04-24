@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class SenhaMasterAuthenticationProvider implements AuthenticationProvider {
+public class SenhaMasterAuthenticationProvider  implements AuthenticationProvider{
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

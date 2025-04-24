@@ -23,18 +23,25 @@ public class CustomFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
+//        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+
         String secretHeader = request.getHeader("x-secret");
+        System.out.println("[DEBUG] x-secret header value: " + secretHeader);
+        if (secretHeader != null && secretHeader.equals("secr3t")) {
+            System.out.println("Valid secret header. Setting authentication.");
 
-        if (secretHeader != null) {
-            if (secretHeader.equals("secr3t")) {
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    "muito secreto", null, List.of(new SimpleGrantedAuthority("ADMIN")));
 
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        "muito secreto", null, List.of(new SimpleGrantedAuthority("ADMIN")));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("Authentication set: " + SecurityContextHolder.getContext().getAuthentication());
+            filterChain.doFilter(request, response);
+        } else {
+            System.out.println("Invalid or missing secret header.");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Cabeçalho x-secret inválido ou ausente");
         }
-
-        filterChain.doFilter(request, response);
     }
 }
