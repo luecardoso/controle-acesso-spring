@@ -18,7 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            SenhaMasterAuthenticationProvider senhaMasterAuthenticationProvider) throws Exception {
         return http
                 .authorizeHttpRequests(requests -> {
                     requests
@@ -27,6 +29,7 @@ public class SecurityConfig {
                 })
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
+                .authenticationProvider(senhaMasterAuthenticationProvider)//pode adicionar mais de um provider
                 .build();
     }
 
